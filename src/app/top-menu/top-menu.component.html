@@ -1,0 +1,106 @@
+<!-- begin #top-menu -->
+<div id="top-menu" class="top-menu navbar navbar-toggleable-md navbar-inverse bg-primary fixed-top">
+  <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse"
+          data-target="#top-menu-navbar" aria-controls="top-menu-navbar" aria-expanded="false"
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Navbar</a>
+  <div class="navbar-collapse collapse" id="top-menu-navbar" aria-expanded="false">
+    <!-- begin top-menu navbar-nav -->
+    <ul *ngIf="menu" class="navbar-nav">
+      <li class="nav-item" *ngFor="let item of menu;" [ngClass]="{'dropdown': item.submenu}" routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-link" *ngIf="!item.link" href="javasript:;">
+          <i *ngIf="item.icon" class="{{ item.icon }}"></i>
+          <span>{{ item.title }}</span>
+          <span *ngIf="item.badge" class="badge pull-right">{{ item.badge }}</span>
+          <span *ngIf="item.label" class="label label-theme m-l-5">{{ item.label }}</span>
+          <b *ngIf="item.caret" class="caret"></b>
+        </a>
+        <a class="nav-link" *ngIf="item.link && !item.external" routerLink="{{ item.link }}">
+          <i *ngIf="item.icon" class="{{ item.icon }}"></i>
+          <span>{{ item.title }}</span>
+          <span *ngIf="item.badge" class="badge pull-right">{{ item.badge }}</span>
+          <span *ngIf="item.label" class="label label-theme m-l-5">{{ item.label }}</span>
+          <b *ngIf="item.caret" class="caret"></b>
+        </a>
+        <a class="nav-link" *ngIf="item.link && item.external" href="{{ item.link }}">
+          <i *ngIf="item.icon" class="{{ item.icon }}"></i>
+          <span>{{ item.title }}</span>
+          <span *ngIf="item.badge" class="badge pull-right">{{ item.badge }}</span>
+          <span *ngIf="item.label" class="label label-theme m-l-5">{{ item.label }}</span>
+          <b *ngIf="item.caret" class="caret"></b>
+        </a>
+        <ul *ngIf="item.submenu" class="sub-menu">
+          <li *ngFor="let subitem of item.submenu" [ngClass]="{'dropdown': subitem.submenu}" routerLinkActive="active"
+              [routerLinkActiveOptions]="{exact: true}">
+            <a class="nav-link" *ngIf="!subitem.link" href="javasript:;">
+              <b *ngIf="subitem.caret" class="caret pull-right"></b>
+              {{ subitem.title }}
+              <i *ngIf="subitem.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+            </a>
+            <a class="nav-link" *ngIf="subitem.link && !subitem.external" routerLink="{{ subitem.link }}">
+              <b *ngIf="subitem.caret" class="caret pull-right"></b>
+              {{ subitem.title }}
+              <i *ngIf="subitem.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+            </a>
+            <a class="nav-link" *ngIf="subitem.link && subitem.external" href="{{ subitem.link }}">
+              <b *ngIf="subitem.caret" class="caret pull-right"></b>
+              {{ subitem.title }}
+              <i *ngIf="subitem.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+            </a>
+            <ul *ngIf="subitem.submenu" class="sub-menu">
+              <li *ngFor="let subitem2 of subitem.submenu" [ngClass]="{'dropdown': subitem2.submenu}"
+                  routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link" *ngIf="!subitem2.link" href="javasript:;">
+                  <b *ngIf="subitem2.caret" class="caret pull-right"></b>
+                  {{ subitem2.title }}
+                  <i *ngIf="subitem2.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+                </a>
+                <a class="nav-link" *ngIf="subitem2.link && !subitem2.external" routerLink="{{ subitem2.link }}">
+                  <b *ngIf="subitem2.caret" class="caret pull-right"></b>
+                  {{ subitem2.title }}
+                  <i *ngIf="subitem2.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+                </a>
+                <a class="nav-link" *ngIf="subitem2.link && subitem2.external" href="{{ subitem2.link }}">
+                  <b *ngIf="subitem2.caret" class="caret pull-right"></b>
+                  {{ subitem2.title }}
+                  <i *ngIf="subitem2.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+                </a>
+                <ul *ngIf="subitem2.submenu" class="sub-menu">
+                  <li *ngFor="let subitem3 of subitem2.submenu" [ngClass]="{'dropdown': subitem3.submenu}"
+                      routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <a class="nav-link" *ngIf="!subitem3.link" href="javasript:;">
+                      <b *ngIf="subitem3.caret" class="caret pull-right"></b>
+                      {{ subitem3.title }}
+                      <i *ngIf="subitem3.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+                    </a>
+                    <a class="nav-link" *ngIf="subitem3.link && !subitem3.external" routerLink="{{ subitem2.link }}">
+                      <b *ngIf="subitem3.caret" class="caret pull-right"></b>
+                      {{ subitem3.title }}
+                      <i *ngIf="subitem3.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+                    </a>
+                    <a class="nav-link" *ngIf="subitem3.link && subitem3.external" routerLink="{{ subitem2.link }}">
+                      <b *ngIf="subitem3.caret" class="caret pull-right"></b>
+                      {{ subitem3.title }}
+                      <i *ngIf="subitem3.highlight" class="fa fa-paper-plane text-theme m-l-5"></i>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <!--<li class="menu-control menu-control-left">-->
+      <!--<a href="#" data-click="prev-menu"><i class="fa fa-angle-left"></i></a>-->
+      <!--</li>-->
+      <!--<li class="menu-control menu-control-right">-->
+      <!--<a href="#" data-click="next-menu"><i class="fa fa-angle-right"></i></a>-->
+      <!--</li>-->
+    </ul>
+    <!-- end top-menu navbar-nav -->
+  </div>
+</div>
+<!-- end #top-menu -->

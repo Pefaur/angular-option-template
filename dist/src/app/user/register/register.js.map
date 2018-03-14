@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../../src/app/user/register/register.ts"],"names":[],"mappings":"AAAA,cAAc,sBAAsB,CAAC;AACrC,cAAc,+BAA+B,CAAC","file":"register.js","sourceRoot":"","sourcesContent":["export * from './register.component';\nexport * from './form-register/form-register';\n"]}

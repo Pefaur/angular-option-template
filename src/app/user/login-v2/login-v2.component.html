@@ -1,0 +1,22 @@
+<div class="login-cover">
+  <div class="login-cover-image"><img [src]="backgroundImage" data-id="login-cover-image" alt=""/></div>
+  <div class="login-cover-bg bg-success"></div>
+</div>
+
+<!-- begin login -->
+<div class="login login-v2" data-pageload-addclass="animated fadeIn">
+  <!-- begin brand -->
+  <div class="login-header">
+    <div class="brand">
+      <span class="logo"></span> Option Admin
+      <small>responsive bootstrap 4 admin template</small>
+    </div>
+  </div>
+  <!-- end brand -->
+  <div class="login-content">
+    <opt-form-login></opt-form-login>
+    <p class="text-center text-white" (click)="goToForgotPassword()">¿Olvidaste tu contraseña?</p>
+    <p class="text-center text-white" (click)="goToRegister()"><strong>haz clic aquí</strong></p>
+  </div>
+</div>
+<!-- end login -->

@@ -1,0 +1,52 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="margin-bottom-0">
+  <label class="control-label">{{LABELS.name}} <span class="text-danger">*</span></label>
+  <div class="row row-space-10">
+    <div class="col-md-6 m-b-15">
+      <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.firstName}}" required
+             formControlName="firstName"/>
+      <ul class="parsley-errors-list filled" *ngIf="formErrors.firstName">{{ formErrors.firstName }}</ul>
+    </div>
+    <div class="col-md-6 m-b-15">
+      <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.lastName}}" required
+             formControlName="lastName"/>
+      <ul class="parsley-errors-list filled" *ngIf="formErrors.lastName">{{ formErrors.lastName }}</ul>
+    </div>
+  </div>
+  <label class="control-label">{{LABELS.email}} <span class="text-danger">*</span></label>
+  <div class="row m-b-15">
+    <div class="col-md-12">
+      <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.email}}" required
+             formControlName="email"/>
+      <ul class="parsley-errors-list filled" *ngIf="formErrors.email">{{ formErrors.email }}</ul>
+    </div>
+  </div>
+  <label class="control-label">{{LABELS.repeatEmail}} <span class="text-danger">*</span></label>
+  <div class="row m-b-15">
+    <div class="col-md-12">
+      <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.repeatEmail}}" required
+             formControlName="repeatEmail"/>
+      <ul class="parsley-errors-list filled" *ngIf="formErrors.repeatEmail">{{ formErrors.repeatEmail }}</ul>
+    </div>
+  </div>
+  <label class="control-label">{{LABELS.password}} <span class="text-danger">*</span></label>
+  <div class="row m-b-15">
+    <div class="col-md-12">
+      <input type="password" class="form-control" placeholder="{{PLACEHOLDERS.password}}" required
+             formControlName="password"/>
+      <ul class="parsley-errors-list filled" *ngIf="formErrors.password">{{ formErrors.password }}</ul>
+    </div>
+  </div>
+  <div class="checkbox m-b-30">
+    <label>
+      <input type="checkbox" required/> By clicking Sign Up, you agree to our <a href="#">Terms</a> and that you
+      have read our <a href="#">Data Policy</a>, including our <a href="#">Cookie Use</a>.
+    </label>
+  </div>
+  <div class="register-buttons">
+    <button type="submit" class="btn btn-primary btn-block btn-lg">{{SUBMIT_LABEL}}</button>
+  </div>
+  <div class="m-t-20 m-b-40 p-b-40 text-inverse">
+    Already a member? Click <a href="login_v3.html">here</a> to login.
+  </div>
+  <hr/>
+</form>

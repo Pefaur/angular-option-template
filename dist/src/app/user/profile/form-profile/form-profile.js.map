@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../../../src/app/user/profile/form-profile/form-profile.ts"],"names":[],"mappings":"AAAA,cAAc,0BAA0B,CAAC","file":"form-profile.js","sourceRoot":"","sourcesContent":["export * from './form-profile.component';\n"]}

@@ -1,0 +1,40 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="section">
+    <h2>Datos personales</h2>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label">{{LABELS.firstName}} <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.firstName}}" required
+               formControlName="firstName"/>
+        <ul class="parsley-errors-list filled" *ngIf="formErrors.firstName">{{ formErrors.firstName }}</ul>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label">{{LABELS.lastName}} <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.lastName}}" required
+               formControlName="lastName"/>
+        <ul class="parsley-errors-list filled" *ngIf="formErrors.lastName">{{ formErrors.lastName }}</ul>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label">{{LABELS.email}} <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="{{PLACEHOLDERS.email}}" required
+               formControlName="email"/>
+        <ul class="parsley-errors-list filled" *ngIf="formErrors.email">{{ formErrors.email }}</ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert fade show mb-4" *ngIf="serverMessage.show"
+       [ngClass]="serverMessage.isStatusOk ? 'alert-success' : 'alert-danger'">
+    {{ serverMessage.message }}
+    <span class="close" (click)="serverMessage.show = false">×</span>
+  </div>
+
+  <div class="row pt-3">
+    <div class="col-md-12 text-center">
+      <button type="submit" class="btn btn-success btn-lg">{{SUBMIT_LABEL}}</button>
+    </div>
+  </div>
+</form>
