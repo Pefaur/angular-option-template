@@ -1,13 +1,11 @@
-import { EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { OptFormComponent, OptAuthService } from '@option/core';
-import { ISubscription } from 'rxjs/Subscription';
-export declare class OptFormForgotPasswordComponent extends OptFormComponent implements OnInit, OnDestroy {
+export declare class OptFormForgotPasswordComponent extends OptFormComponent implements OnInit {
     protected formBuilder: FormBuilder;
     protected authService: OptAuthService;
     onSubmitted: EventEmitter<{}>;
     onSubmitError: EventEmitter<{}>;
-    requestSubscribes: ISubscription[];
     formErrors: {
         'email': string;
     };
@@ -27,7 +25,5 @@ export declare class OptFormForgotPasswordComponent extends OptFormComponent imp
     };
     SUMBIT_LABEL: string;
     constructor(formBuilder: FormBuilder, authService: OptAuthService);
-    ngOnInit(): void;
-    ngOnDestroy(): void;
     submit(): void;
 }

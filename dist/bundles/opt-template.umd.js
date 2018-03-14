@@ -104,37 +104,6 @@ var OptNotFoundComponent = /** @class */ (function () {
     return OptNotFoundComponent;
 }());
 
-var LazyScriptStore = [
-    {
-        name: 'slimscroll',
-        src: '../../../assets/plugins/slimscroll/jquery.slimscroll.js'
-    },
-    {
-        name: 'colorpicker',
-        src: '../../../assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js'
-    },
-    {
-        name: 'datepicker',
-        src: '../../../assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'
-    },
-    {
-        name: 'datepicker-es',
-        src: '../../../assets/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js'
-    },
-    {
-        name: 'selectpicker',
-        src: '../../../assets/plugins/bootstrap-select/bootstrap-select.min.js'
-    },
-    {
-        name: 'select2',
-        src: '../../../assets/plugins/select2/dist/js/select2.full.js'
-    },
-    {
-        name: 'select2-es',
-        src: '../../../assets/plugins/select2/dist/js/i18n/es.js'
-    }
-];
-
 // @Component({
 //   selector: 'opt-sidebar',
 //   templateUrl: './sidebar.component.html'
@@ -1083,26 +1052,21 @@ var OptFormForgotPasswordComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormForgotPasswordComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormForgotPasswordComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormForgotPasswordComponent.prototype.submit = function () {
-        var _this = this;
-        this.requestSubscribes.push(this.authService.recoverPassword(this.form.value.email)
-            .subscribe(function (response) {
-            _this.onSubmitted.emit();
-            _this.setServerMessage(response.statusCode, true);
-        }, function (response) {
-            _this.onSubmitError.emit();
-            _this.setServerMessage(response.statusCode);
-        }));
+        var self = this;
+        self.authService.recoverPassword(self.form.value.email)
+            .then(function (response) {
+            self.onSubmitted.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = true;
+        })
+            .catch(function (response) {
+            self.onSubmitError.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     OptFormForgotPasswordComponent.propDecorators = {
         'onSubmitted': [{ type: core.Output },],
@@ -1187,24 +1151,17 @@ var OptFormLoginComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormLoginComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormLoginComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormLoginComponent.prototype.submit = function () {
-        var _this = this;
-        this.requestSubscribes.push(this.authService.login(this.form.value.email, this.form.value.password)
-            .subscribe(function () {
-            _this.router.navigate(['/']);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        var self = this;
+        this.authService.login(self.form.value.email, self.form.value.password)
+            .then(function () {
+            self.router.navigate(['/']);
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormLoginComponent;
 }(core$1.OptFormComponent));
@@ -1337,29 +1294,22 @@ var OptFormProfileComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormProfileComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormProfileComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormProfileComponent.prototype.submit = function () {
-        var _this = this;
+        var self = this;
         var user = new core$1.OptUser();
-        user.setFullName(this.form.value.firstName, this.form.value.lastName);
-        user.username = this.form.value.email;
-        user.password = this.form.value.password;
-        user.email = this.form.value.email;
-        this.requestSubscribes.push(this.userService.update(user)
-            .subscribe(function () {
-            _this.router.navigate(['/']);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        user.setFullName(self.form.value.firstName, self.form.value.lastName);
+        user.username = self.form.value.email;
+        user.password = self.form.value.password;
+        user.email = self.form.value.email;
+        self.userService.update(user)
+            .then(function () {
+            self.router.navigate(['/']);
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormProfileComponent;
 }(core$1.OptFormComponent));
@@ -1435,27 +1385,22 @@ var OptFormChangePasswordComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormChangePasswordComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormChangePasswordComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormChangePasswordComponent.prototype.submit = function () {
-        var _this = this;
-        var actualPassword = this.form.value.actualPassword;
-        var password = this.form.value.password;
-        var repeatPassword = this.form.value.repeatPassword;
-        this.requestSubscribes.push(this.userService.changePassword(actualPassword, password, repeatPassword)
-            .subscribe(function (response) {
-            _this.setServerMessage(response.statusCode, true);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        var self = this;
+        var actualPassword = self.form.value.actualPassword;
+        var password = self.form.value.password;
+        var repeatPassword = self.form.value.repeatPassword;
+        self.userService.changePassword(actualPassword, password, repeatPassword)
+            .then(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = true;
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormChangePasswordComponent;
 }(core$1.OptFormComponent));
@@ -1545,35 +1490,33 @@ var OptFormRecoverPasswordComponent = /** @class */ (function (_super) {
         return _this;
     }
     OptFormRecoverPasswordComponent.prototype.ngOnInit = function () {
-        var _this = this;
+        var self = this;
         // subscribe to router event
         this.activatedRoute.params.subscribe(function (params) {
-            _this.token = params['token'];
+            self.token = params['token'];
         });
         _super.prototype.buildForm.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormRecoverPasswordComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
     };
     OptFormRecoverPasswordComponent.prototype.goToLogin = function () {
         this.router.navigate(['/login']);
     };
     OptFormRecoverPasswordComponent.prototype.submit = function () {
-        var _this = this;
+        var self = this;
         var password = this.form.value.password;
         var passwordConfirmation = this.form.value.password;
-        this.requestSubscribes.push(this.authService.resetPassword(this.token, password, passwordConfirmation)
-            .subscribe(function (response) {
-            _this.onSubmitted.emit();
-            _this.setServerMessage(response.statusCode, true);
-        }, function (response) {
-            _this.onSubmitError.emit();
-            _this.setServerMessage(response.statusCode);
-        }));
+        this.authService.resetPassword(this.token, password, passwordConfirmation)
+            .then(function (response) {
+            self.onSubmitted.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = true;
+        })
+            .catch(function (response) {
+            self.onSubmitError.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     OptFormRecoverPasswordComponent.propDecorators = {
         'onSubmitted': [{ type: core.Output },],
@@ -1689,29 +1632,22 @@ var OptFormRegisterComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormRegisterComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormRegisterComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormRegisterComponent.prototype.submit = function () {
-        var _this = this;
+        var self = this;
         var user = new core$1.OptUser();
-        user.setFullName(this.form.value.firstName, this.form.value.lastName);
-        user.username = this.form.value.email;
-        user.password = this.form.value.password;
-        user.email = this.form.value.email;
-        this.requestSubscribes.push(this.authService.register(user)
-            .subscribe(function () {
-            _this.router.navigate(['/']);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        user.setFullName(self.form.value.firstName, self.form.value.lastName);
+        user.username = self.form.value.email;
+        user.password = self.form.value.password;
+        user.email = self.form.value.email;
+        self.authService.register(user)
+            .then(function () {
+            self.router.navigate(['/']);
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormRegisterComponent;
 }(core$1.OptFormComponent));
@@ -1875,451 +1811,55 @@ var OptionTemplateComponent = /** @class */ (function () {
     return OptionTemplateComponent;
 }());
 
-var ColorPickerDirective = /** @class */ (function () {
-    function ColorPickerDirective(lazyScriptService) {
-        this.lazyScriptService = lazyScriptService;
-        this.onChangeColor = new core.EventEmitter();
-    }
-    ColorPickerDirective.prototype.ngAfterViewInit = function () {
-        var self = this;
-        self.lazyScriptService.load('colorpicker')
-            .then(function (data) {
-            console.log('script loaded ', data);
-            $(document.getElementById(self.id)).colorpicker({ format: 'hex' }).on('changeColor', function (e) {
-                self.onChangeColor.emit(this.value);
-            });
-        })
-            .catch(function (error) {
-            console.log(error);
-        });
-    };
-    ColorPickerDirective.decorators = [
-        { type: core.Directive, args: [{
-                    selector: '[optColorPicker]'
-                },] },
-    ];
-    /** @nocollapse */
-    ColorPickerDirective.ctorParameters = function () { return [
-        { type: core$1.OptLazyScriptService, },
-    ]; };
-    ColorPickerDirective.propDecorators = {
-        'id': [{ type: core.Input },],
-        'onChangeColor': [{ type: core.Output },],
-    };
-    return ColorPickerDirective;
-}());
-
-var DatePickerDirective = /** @class */ (function () {
-    function DatePickerDirective(lazyScriptService, el) {
-        this.lazyScriptService = lazyScriptService;
-        this.el = el;
-        this.onChange = new core.EventEmitter();
-        this.onChangeMonth = new core.EventEmitter();
-        this.onLoad = new core.EventEmitter();
-    }
-    DatePickerDirective.prototype.loadCurrentMonthDisabledDates = function (currentDate) {
-        if (!this.$element) {
-            return;
-        }
-        if (!this.availableDates || (this.availableDates && this.availableDates.length === 0)) {
-            return;
-        }
-        if (!this.actualDate && !currentDate) {
-            return;
-        }
-        var momCurrentDate = moment(this.actualDate);
-        if (currentDate) {
-            momCurrentDate = moment(currentDate);
-        }
-        var availableDatesMap = {};
-        var dateFormat = 'YYYY-MM-DD';
-        // available dates order by date
-        this.availableDates.map(function (dateAvailable) {
-            availableDatesMap[moment(dateAvailable).format(dateFormat)] = dateAvailable;
-        });
-        var startDate = moment(momCurrentDate.startOf('month').format(dateFormat), dateFormat);
-        var endDate = moment(momCurrentDate.endOf('month').add(1, 'days').format(dateFormat), dateFormat);
-        var additionalMonthDates = 20;
-        startDate = startDate.subtract(additionalMonthDates, 'days');
-        endDate = endDate.add(additionalMonthDates, 'days');
-        // disable not available month dates
-        var disabledDates = [];
-        var momentIterator = startDate.clone();
-        while (endDate.diff(momentIterator, 'days') > 0) {
-            if (!availableDatesMap[momentIterator.format('YYYY-MM-DD')]) {
-                disabledDates.push(momentIterator.toDate());
-            }
-            momentIterator.add(1, 'days');
-        }
-        this.$element.datepicker('setDatesDisabled', disabledDates);
-        this.$element.datepicker('setDate', this.actualDate);
-        this.renderActiveDate();
-    };
-    DatePickerDirective.prototype.ngOnChanges = function (changes) {
-        var availableDates = changes.availableDates;
-        var isCollapsed = changes.isCollapsed;
-        var setDate = changes.setDate;
-        if (availableDates && (availableDates.previousValue !== availableDates.currentValue)) {
-            this.loadCurrentMonthDisabledDates(this.actualDate);
-        }
-        if (isCollapsed && (isCollapsed.previousValue !== isCollapsed.currentValue)) {
-            this.setCollapse(isCollapsed.currentValue);
-        }
-        if (setDate) {
-            var previousValue = setDate.previousValue ? setDate.previousValue.getTime() : setDate.previousValue;
-            var currentValue = setDate.currentValue ? setDate.currentValue.getTime() : setDate.currentValue;
-            if (previousValue !== currentValue && this.$element) {
-                this.$element.datepicker('setDate', setDate.currentValue);
-                this.lastClickedDate = setDate.currentValue;
-                this.loadCurrentMonthDisabledDates();
-            }
-        }
-    };
-    DatePickerDirective.prototype.loadTemplateModification = function () {
-        var _this = this;
-        var $collapseContainer = $('<tr>' +
-            '<td colspan="2"></td>' +
-            '<td colspan="3" class="collapse-button"></td>' +
-            '<td colspan="2"></td>' +
-            '</tr>');
-        var $collapseToggle = $('<a class="collapse-toggle link"></a>')
-            .click(function () { return _this.toggleCollapse(); });
-        $collapseContainer.find('.collapse-button').append($collapseToggle);
-        this.$element.find('tfoot').append($collapseContainer);
-    };
-    DatePickerDirective.prototype.getDefaultOptions = function () {
-        return {
-            format: 'dd/mm/yyyy',
-            language: 'es',
-            templates: {
-                leftArrow: '<i class="fa fa-angle-left" aria-hidden="true"></i>',
-                rightArrow: '<i class="fa fa-angle-right" aria-hidden="true"></i>'
-            },
-            footTemplate: ''
-        };
-    };
-    DatePickerDirective.prototype.collapse = function () {
-        var $tbody = this.$element.find('tbody');
-        var $activeDay = $tbody.find('.day.active');
-        $tbody.find('tr').hide();
-        var $activeRow = $activeDay.closest('tr');
-        $activeRow.show();
-    };
-    DatePickerDirective.prototype.expand = function () {
-        var $tbody = this.$element.find('tbody');
-        $tbody.find('tr').show();
-    };
-    DatePickerDirective.prototype.setCollapse = function (collapse) {
-        if (!this.$element) {
-            return;
-        }
-        collapse ? this.collapse() : this.expand();
-    };
-    DatePickerDirective.prototype.toggleCollapse = function () {
-        console.log('toggle collapse');
-        this.isCollapsed = !this.isCollapsed;
-        this.setCollapse(this.isCollapsed);
-    };
-    DatePickerDirective.prototype.renderActiveDate = function () {
-        // clear active elements
-        this.$element.find('.active').removeClass('active');
-        if (this.lastClickedDate) {
-            // add active to last clicked target
-            var momLastClickedDate = moment(this.lastClickedDate).clone();
-            var lastClickedDate_1 = momLastClickedDate.format('D');
-            var lastClickedMonth = momLastClickedDate.format('MM');
-            var lastClickedYear = momLastClickedDate.format('YYYY');
-            var momActualDate = moment(this.actualDate).clone();
-            var actualYear = momActualDate.format('YYYY');
-            if (actualYear !== lastClickedYear) {
-                return;
-            }
-            var filterClass = '.day';
-            if (lastClickedMonth !== momActualDate.format('MM')) {
-                if (lastClickedMonth === momActualDate.clone().add(1, 'month').format('MM')) {
-                    filterClass += '.new';
-                }
-                else if (lastClickedMonth === momActualDate.clone().subtract(1, 'month').format('MM')) {
-                    filterClass += '.old';
-                }
-                else {
-                    return;
-                }
-            }
-            var filterDays = this.$element.find(filterClass);
-            filterDays.map(function (key, filterDay) {
-                var $filterDay = $(filterDay);
-                if ($filterDay.html() === lastClickedDate_1 && !$filterDay.hasClass('old') && !$filterDay.hasClass('new')) {
-                    // active to lastClickedDate
-                    $filterDay.addClass('active');
-                }
-            });
-        }
-    };
-    DatePickerDirective.prototype.ngAfterViewInit = function () {
-        var self = this;
-        if (!self.availableDates) {
-            self.availableDates = [];
-        }
-        self.lazyScriptService.load('datepicker')
-            .then(function (data) {
-            self.lazyScriptService.loadScript('datepicker-es')
-                .then(function () {
-                self.options = $.extend(self.getDefaultOptions(), self.options);
-                self.$element = $(self.el.nativeElement);
-                var $datepicker = self.$element.datepicker(self.options);
-                $datepicker.on('changeDate', function (ev) {
-                    var hasDistintDates = self.actualDate && self.actualDate.getTime() !== ev.date.getTime();
-                    self.actualDate = ev.date;
-                    // self.onChange.emit(ev.date);
-                    if (hasDistintDates) {
-                        self.loadCurrentMonthDisabledDates(ev.date);
-                    }
-                });
-                $datepicker.on('changeMonth', function (ev) {
-                    self.actualDate = ev.date;
-                    self.onChangeMonth.emit(ev.date);
-                    self.loadCurrentMonthDisabledDates(ev.date);
-                });
-                $datepicker.find('.datepicker').on('click', 'td.day', function (ev) {
-                    var $currentTarget = $(ev.currentTarget);
-                    if ($currentTarget.hasClass('disabled-date')) {
-                        return;
-                    }
-                    var actualDate = moment(self.actualDate).clone();
-                    var isOldMonthDate = $currentTarget.hasClass('old');
-                    var isNextMonthDate = $currentTarget.hasClass('new');
-                    if (isOldMonthDate) {
-                        actualDate = actualDate.subtract(1, 'month');
-                    }
-                    else if (isNextMonthDate) {
-                        actualDate = actualDate.add(1, 'month');
-                    }
-                    var currentDate = $currentTarget.html();
-                    if (currentDate.length === 1) {
-                        currentDate = '0' + currentDate;
-                    }
-                    var dateFormat = 'YYYY-MM-DD';
-                    ev.date = moment(actualDate.format('YYYY-MM-[' + currentDate + ']'), dateFormat).toDate();
-                    self.lastClickedDate = ev.date;
-                    var hasDistintDates = self.actualDate && self.actualDate.getTime() !== ev.date.getTime();
-                    self.actualDate = ev.date;
-                    self.onChange.emit(ev.date);
-                    if (hasDistintDates) {
-                        self.loadCurrentMonthDisabledDates(ev.date);
-                    }
-                });
-                self.actualDate = moment().startOf('day').toDate();
-                if (self.setDate) {
-                    self.$element.datepicker('setDate', self.setDate);
-                    self.lastClickedDate = self.setDate;
-                }
-                else {
-                    self.loadCurrentMonthDisabledDates();
-                }
-                self.loadCurrentMonthDisabledDates();
-                self.loadTemplateModification();
-                self.setCollapse(self.isCollapsed);
-                self.onLoad.emit();
-            })
-                .catch(function (error) {
-                console.log(error);
-            });
-        })
-            .catch(function (error) {
-            console.log(error);
-        });
-    };
-    DatePickerDirective.decorators = [
-        { type: core.Directive, args: [{
-                    selector: '[optDatePicker]'
-                },] },
-    ];
-    /** @nocollapse */
-    DatePickerDirective.ctorParameters = function () { return [
-        { type: core$1.OptLazyScriptService, },
-        { type: core.ElementRef, },
-    ]; };
-    DatePickerDirective.propDecorators = {
-        'options': [{ type: core.Input, args: ['optDatePicker',] },],
-        'isCollapsed': [{ type: core.Input },],
-        'setDate': [{ type: core.Input },],
-        'availableDates': [{ type: core.Input },],
-        'onChange': [{ type: core.Output },],
-        'onChangeMonth': [{ type: core.Output },],
-        'onLoad': [{ type: core.Output },],
-    };
-    return DatePickerDirective;
-}());
-
-var ScrollDirective = /** @class */ (function () {
-    function ScrollDirective(el) {
-        this.el = el;
-    }
-    ScrollDirective.prototype.ngOnChanges = function (changes) {
-        var $el = $(this.el.nativeElement);
-        $el.children().css({
-            'marginTop': (this.top * -1),
-            'marginLeft': (this.left * -1),
-        });
-    };
-    ScrollDirective.decorators = [
-        { type: core.Directive, args: [{
-                    selector: '[optScroll]'
-                },] },
-    ];
-    /** @nocollapse */
-    ScrollDirective.ctorParameters = function () { return [
-        { type: core.ElementRef, },
-    ]; };
-    ScrollDirective.propDecorators = {
-        'top': [{ type: core.Input },],
-        'left': [{ type: core.Input },],
-    };
-    return ScrollDirective;
-}());
-
-var Select2Directive = /** @class */ (function () {
-    function Select2Directive(lazyScriptService, el) {
-        this.lazyScriptService = lazyScriptService;
-        this.el = el;
-        this.onSelect = new core.EventEmitter();
-        this.onUnselect = new core.EventEmitter();
-    }
-    Select2Directive.prototype.ngAfterViewInit = function () {
-        var self = this;
-        self.options = $.extend({ language: 'es' }, self.options);
-        self.lazyScriptService.load('select2')
-            .then(function (data) {
-            self.lazyScriptService.loadScript('select2-es')
-                .then(function () {
-                var $select2Element = $(self.el.nativeElement).select2(self.options);
-                $select2Element.on('select2:select', function (e) {
-                    self.onSelect.emit($select2Element.val());
-                });
-                $select2Element.on('select2:unselect', function () {
-                    self.onSelect.emit();
-                });
-            })
-                .catch(function (error) {
-                console.log(error);
-            });
-        })
-            .catch(function (error) {
-            console.log(error);
-        });
-    };
-    Select2Directive.decorators = [
-        { type: core.Directive, args: [{
-                    selector: '[optSelect2]'
-                },] },
-    ];
-    /** @nocollapse */
-    Select2Directive.ctorParameters = function () { return [
-        { type: core$1.OptLazyScriptService, },
-        { type: core.ElementRef, },
-    ]; };
-    Select2Directive.propDecorators = {
-        'options': [{ type: core.Input, args: ['optSelect2',] },],
-        'onSelect': [{ type: core.Output },],
-        'onUnselect': [{ type: core.Output },],
-    };
-    return Select2Directive;
-}());
-
-var SelectPickerDirective = /** @class */ (function () {
-    function SelectPickerDirective(lazyScriptService, el) {
-        this.lazyScriptService = lazyScriptService;
-        this.el = el;
-    }
-    SelectPickerDirective.prototype.ngAfterViewInit = function () {
-        var self = this;
-        self.options = $.extend({}, self.options);
-        self.lazyScriptService.load('selectpicker')
-            .then(function (data) {
-            $(self.el.nativeElement).selectpicker(self.options);
-        })
-            .catch(function (error) {
-            console.log(error);
-        });
-    };
-    SelectPickerDirective.decorators = [
-        { type: core.Directive, args: [{
-                    selector: '[optSelectPicker]'
-                },] },
-    ];
-    /** @nocollapse */
-    SelectPickerDirective.ctorParameters = function () { return [
-        { type: core$1.OptLazyScriptService, },
-        { type: core.ElementRef, },
-    ]; };
-    SelectPickerDirective.propDecorators = {
-        'options': [{ type: core.Input },],
-    };
-    return SelectPickerDirective;
-}());
-
-var SlimscrollrDirective = /** @class */ (function () {
-    function SlimscrollrDirective(lazyScriptService, el) {
-        this.lazyScriptService = lazyScriptService;
-        this.el = el;
-    }
-    SlimscrollrDirective.prototype.ngAfterViewInit = function () {
-        var self = this;
-        self.lazyScriptService.load('slimscroll')
-            .then(function (data) {
-            self.generateSlimScroll(self.el.nativeElement);
-        })
-            .catch(function (error) {
-            console.log(error);
-        });
-    };
-    SlimscrollrDirective.prototype.generateSlimScroll = function (element) {
-        if ($(element).attr('data-init')) {
-            return;
-        }
-        var dataHeight = this.height;
-        dataHeight = (!dataHeight) ? $(element).height() : dataHeight;
-        var scrollBarOption = {
-            height: dataHeight,
-            alwaysVisible: false,
-            color: 'rgba(0,0,0,0)'
-        };
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            $(element).css('height', dataHeight);
-            $(element).css('overflow-x', 'scroll');
-        }
-        else {
-            $(element).slimScroll(scrollBarOption);
-        }
-        $(element).attr('data-init', true);
-    };
-    SlimscrollrDirective.decorators = [
-        { type: core.Directive, args: [{
-                    selector: '[optSlimscroll]'
-                },] },
-    ];
-    /** @nocollapse */
-    SlimscrollrDirective.ctorParameters = function () { return [
-        { type: core$1.OptLazyScriptService, },
-        { type: core.ElementRef, },
-    ]; };
-    SlimscrollrDirective.propDecorators = {
-        'height': [{ type: core.Input },],
-    };
-    return SlimscrollrDirective;
-}());
-
-// Constant
-// Directives
-var sharedDirectives = [
-    ColorPickerDirective,
-    DatePickerDirective,
-    ScrollDirective,
-    Select2Directive,
-    SelectPickerDirective,
-    SlimscrollrDirective
+// User Login / Register
+var routes = [
+    { path: '', redirectTo: '/user/login', pathMatch: 'full' },
+    { path: 'user/login', component: OptLoginComponent, data: { title: 'Login Page' } },
+    { path: 'user/login-v2', component: OptLoginV2Component, data: { title: 'Login V2 Page' } },
+    { path: 'user/register', component: OptRegisterComponent, data: { title: 'Register Page' } },
+    { path: 'user/recover-pasword', component: OptRecoverPasswordComponent, data: { title: 'Recover Password Page' } },
+    { path: 'user/forgot-password', component: OptForgotPasswordComponent, data: { title: 'Forgot Password Page' } },
+    { path: 'user/profile', component: OptProfileComponent, data: { title: 'Profile Page' } }
 ];
+var OptionTemplateRoutingModule = /** @class */ (function () {
+    function OptionTemplateRoutingModule() {
+    }
+    OptionTemplateRoutingModule.decorators = [
+        { type: core.NgModule, args: [{
+                    imports: [router.RouterModule.forRoot(routes)],
+                    exports: [router.RouterModule]
+                },] },
+    ];
+    /** @nocollapse */
+    OptionTemplateRoutingModule.ctorParameters = function () { return []; };
+    return OptionTemplateRoutingModule;
+}());
+
+// Main Component
+// import { OptionTemplateComponent } from './option-template.component'
+// import { OptNotFoundComponent } from './not-found/not-found.component'
+// import { OptCoverComponent } from './cover/cover.component';
+// import { OptHeaderComponent } from './header/header.component';
+// import { OptMegaMenuComponent } from './header/mega-menu/mega-menu.component';
+// import { OptTopMenuComponent } from './top-menu/top-menu.component';
+// import { OptSidebarComponent } from './sidebar/sidebar.component';
+// import { OptSidebarTwoComponent } from './sidebar-two/sidebar-two.component';
+// import { OptContentComponent } from './content/content.component';
+// import { OptFooterComponent } from './footer/footer.component';
+// import { OptThemePanelComponent } from './theme-panel/theme-panel.component';
+// User
+// import { OptLoginComponent } from './user/login/login.component';
+// import { OptFormLoginComponent } from './user/login/form-login/form-login.component';
+// import { OptLoginV2Component } from './user/login-v2/login-v2.component';
+// import { OptRegisterComponent } from './user/register/register.component';
+// import { OptFormRegisterComponent } from './user/register/form-register/form-register.component';
+// import { OptRecoverPasswordComponent } from './user/recover-password/recover-password.component';
+// import { OptFormRecoverPasswordComponent } from './user/recover-password/form-recover-password/form-recover-password.component';
+// import { OptForgotPasswordComponent } from './user/forgot-password/forgot-password.component';
+// import { OptFormForgotPasswordComponent } from './user/forgot-password/form-forgot-password/form-forgot-password.component';
+// import { OptProfileComponent } from './user/profile/profile.component';
+// import { OptFormProfileComponent } from './user/profile/form-profile/form-profile.component';
+// import { OptFormChangePasswordComponent } from './user/profile/form-change-password/form-change-password.component';
 var OptionTemplateModule = /** @class */ (function () {
     function OptionTemplateModule() {
     }
@@ -2332,14 +1872,14 @@ var OptionTemplateModule = /** @class */ (function () {
                         router.RouterModule,
                         forms.FormsModule,
                         forms.ReactiveFormsModule,
-                        core$1.OptionCoreModule.forRoot({
-                            apiUrl: '',
-                            lazyScriptsStore: LazyScriptStore
-                        })
+                        core$1.OptionCoreModule.forRoot(''),
+                        OptionTemplateRoutingModule
                     ],
-                    declarations: sharedDirectives,
-                    exports: sharedDirectives,
-                    providers: [core$1.OptUserService]
+                    declarations: [],
+                    providers: [
+                        core$1.OptAuthService,
+                        core$1.OptUserService
+                    ],
                 },] },
     ];
     /** @nocollapse */
@@ -2355,7 +1895,6 @@ exports.OptFooterComponent = OptFooterComponent;
 exports.OptHeaderComponent = OptHeaderComponent;
 exports.OptMegaMenuComponent = OptMegaMenuComponent;
 exports.OptNotFoundComponent = OptNotFoundComponent;
-exports.LazyScriptStore = LazyScriptStore;
 exports.OptSidebarComponent = OptSidebarComponent;
 exports.OptSidebarTwoComponent = OptSidebarTwoComponent;
 exports.OptThemePanelComponent = OptThemePanelComponent;

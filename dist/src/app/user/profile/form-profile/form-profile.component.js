@@ -74,29 +74,22 @@ var OptFormProfileComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormProfileComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormProfileComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormProfileComponent.prototype.submit = function () {
-        var _this = this;
+        var self = this;
         var user = new OptUser();
-        user.setFullName(this.form.value.firstName, this.form.value.lastName);
-        user.username = this.form.value.email;
-        user.password = this.form.value.password;
-        user.email = this.form.value.email;
-        this.requestSubscribes.push(this.userService.update(user)
-            .subscribe(function () {
-            _this.router.navigate(['/']);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        user.setFullName(self.form.value.firstName, self.form.value.lastName);
+        user.username = self.form.value.email;
+        user.password = self.form.value.password;
+        user.email = self.form.value.email;
+        self.userService.update(user)
+            .then(function () {
+            self.router.navigate(['/']);
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormProfileComponent;
 }(OptFormComponent));

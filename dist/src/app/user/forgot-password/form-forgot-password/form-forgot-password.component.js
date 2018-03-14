@@ -49,26 +49,21 @@ var OptFormForgotPasswordComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormForgotPasswordComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormForgotPasswordComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormForgotPasswordComponent.prototype.submit = function () {
-        var _this = this;
-        this.requestSubscribes.push(this.authService.recoverPassword(this.form.value.email)
-            .subscribe(function (response) {
-            _this.onSubmitted.emit();
-            _this.setServerMessage(response.statusCode, true);
-        }, function (response) {
-            _this.onSubmitError.emit();
-            _this.setServerMessage(response.statusCode);
-        }));
+        var self = this;
+        self.authService.recoverPassword(self.form.value.email)
+            .then(function (response) {
+            self.onSubmitted.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = true;
+        })
+            .catch(function (response) {
+            self.onSubmitError.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     OptFormForgotPasswordComponent.propDecorators = {
         'onSubmitted': [{ type: Output },],

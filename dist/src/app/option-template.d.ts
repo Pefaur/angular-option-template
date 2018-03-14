@@ -3,7 +3,6 @@ export * from './cover/cover';
 export * from './footer/footer';
 export * from './header/header';
 export * from './not-found/not-found';
-export * from './shared/shared';
 export * from './sidebar/sidebar';
 export * from './sidebar-two/sidebar-two';
 export * from './theme-panel/theme-panel';

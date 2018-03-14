@@ -54,24 +54,17 @@ var OptFormLoginComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormLoginComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormLoginComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormLoginComponent.prototype.submit = function () {
-        var _this = this;
-        this.requestSubscribes.push(this.authService.login(this.form.value.email, this.form.value.password)
-            .subscribe(function () {
-            _this.router.navigate(['/']);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        var self = this;
+        this.authService.login(self.form.value.email, self.form.value.password)
+            .then(function () {
+            self.router.navigate(['/']);
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormLoginComponent;
 }(OptFormComponent));

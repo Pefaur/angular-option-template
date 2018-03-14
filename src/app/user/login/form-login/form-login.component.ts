@@ -1,18 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OptFormComponent, OptAuthService, OptResponse } from '@option/core';
-import { ISubscription } from 'rxjs/Subscription';
 
 // @Component({
 //   selector: 'opt-form-login',
 //   templateUrl: './form-login.component.html',
 //   styleUrls: ['./form-login.component.scss']
 // })
-export class OptFormLoginComponent extends OptFormComponent implements OnInit, OnDestroy {
-
-  requestSubscribes: ISubscription[];
-
+export class OptFormLoginComponent extends OptFormComponent implements OnInit {
   SERVER_MESSAGES: any = {
     401: 'Invalid user or password.'
   };
@@ -44,7 +40,6 @@ export class OptFormLoginComponent extends OptFormComponent implements OnInit, O
               protected authService: OptAuthService,
               protected router: Router) {
     super(formBuilder);
-
     this.formBuilderGroupControlsConfig = {
       email: [
         null, [Validators.required, Validators.email]
@@ -55,29 +50,16 @@ export class OptFormLoginComponent extends OptFormComponent implements OnInit, O
     };
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.requestSubscribes = [];
-  }
-
-  ngOnDestroy(): void {
-    // unsubscribe requests
-    this.requestSubscribes.map(requestSubscribe => {
-      requestSubscribe.unsubscribe();
-    });
-  }
-
   submit() {
-    this.requestSubscribes.push(this.authService.login(this.form.value.email, this.form.value.password)
-      .subscribe(
-        () => {
-          this.router.navigate(['/']);
-        },
-        (response: OptResponse) => {
-          this.setServerMessage(response.statusCode);
-        }
-      )
-    );
+    const self = this;
+    this.authService.login(self.form.value.email, self.form.value.password)
+      .then(function() {
+        self.router.navigate(['/']);
+      })
+      .catch(function(response: OptResponse) {
+        self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = false;
+      });
   }
-
 }

@@ -1,18 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OptFormComponent, OptPasswordValidation, OptResponse, OptUserService } from '@option/core';
-import { ISubscription } from 'rxjs/Subscription';
 
 // @Component({
 //   selector: 'opt-form-change-password',
 //   templateUrl: './form-change-password.component.html',
 //   styleUrls: ['./form-change-password.component.scss']
 // })
-export class OptFormChangePasswordComponent extends OptFormComponent implements OnInit, OnDestroy {
-
-  requestSubscribes: ISubscription[];
-
+export class OptFormChangePasswordComponent extends OptFormComponent implements OnInit {
   SERVER_MESSAGES: any = {
     400: 'The actual password is incorrect.',
     200: 'Your password was successfully changed.'
@@ -71,32 +67,21 @@ export class OptFormChangePasswordComponent extends OptFormComponent implements 
     };
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.requestSubscribes = [];
-  }
-
-  ngOnDestroy(): void {
-    // unsubscribe requests
-    this.requestSubscribes.map(requestSubscribe => {
-      requestSubscribe.unsubscribe();
-    });
-  }
-
   submit() {
-    const actualPassword = this.form.value.actualPassword;
-    const password = this.form.value.password;
-    const repeatPassword = this.form.value.repeatPassword;
-    this.requestSubscribes.push(this.userService.changePassword(actualPassword, password, repeatPassword)
-      .subscribe(
-        (response: OptResponse) => {
-          this.setServerMessage(response.statusCode, true);
-        },
-        (response: OptResponse) => {
-          this.setServerMessage(response.statusCode);
-        }
-      )
-    );
+    const self = this;
+    const actualPassword = self.form.value.actualPassword;
+    const password = self.form.value.password;
+    const repeatPassword = self.form.value.repeatPassword;
+    self.userService.changePassword(actualPassword, password, repeatPassword)
+      .then(function(response: OptResponse) {
+        self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = true;
+      })
+      .catch(function(response: OptResponse) {
+        self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = false;
+      });
   }
-
 }

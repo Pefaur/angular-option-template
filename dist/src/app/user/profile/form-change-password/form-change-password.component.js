@@ -71,27 +71,22 @@ var OptFormChangePasswordComponent = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OptFormChangePasswordComponent.prototype.ngOnInit = function () {
-        _super.prototype.ngOnInit.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormChangePasswordComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
-    };
     OptFormChangePasswordComponent.prototype.submit = function () {
-        var _this = this;
-        var actualPassword = this.form.value.actualPassword;
-        var password = this.form.value.password;
-        var repeatPassword = this.form.value.repeatPassword;
-        this.requestSubscribes.push(this.userService.changePassword(actualPassword, password, repeatPassword)
-            .subscribe(function (response) {
-            _this.setServerMessage(response.statusCode, true);
-        }, function (response) {
-            _this.setServerMessage(response.statusCode);
-        }));
+        var self = this;
+        var actualPassword = self.form.value.actualPassword;
+        var password = self.form.value.password;
+        var repeatPassword = self.form.value.repeatPassword;
+        self.userService.changePassword(actualPassword, password, repeatPassword)
+            .then(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = true;
+        })
+            .catch(function (response) {
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     return OptFormChangePasswordComponent;
 }(OptFormComponent));

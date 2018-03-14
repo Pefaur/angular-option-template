@@ -1,18 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OptFormComponent, OptUser, OptResponse, OptUserService } from '@option/core';
-import { ISubscription } from 'rxjs/Subscription';
 
 // @Component({
 //   selector: 'opt-form-profile',
 //   templateUrl: './form-profile.component.html',
 //   styleUrls: ['./form-profile.component.scss']
 // })
-export class OptFormProfileComponent extends OptFormComponent implements OnInit, OnDestroy {
-
-  requestSubscribes: ISubscription[];
-
+export class OptFormProfileComponent extends OptFormComponent implements OnInit {
   SERVER_MESSAGES: any = {
     401: 'Invalid user or password.'
   };
@@ -73,34 +69,21 @@ export class OptFormProfileComponent extends OptFormComponent implements OnInit,
     };
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.requestSubscribes = [];
-  }
-
-  ngOnDestroy(): void {
-    // unsubscribe requests
-    this.requestSubscribes.map(requestSubscribe => {
-      requestSubscribe.unsubscribe();
-    });
-  }
-
   submit() {
+    const self = this;
     const user = new OptUser();
-    user.setFullName(this.form.value.firstName, this.form.value.lastName);
-    user.username = this.form.value.email;
-    user.password = this.form.value.password;
-    user.email = this.form.value.email;
-    this.requestSubscribes.push(this.userService.update(user)
-      .subscribe(
-        () => {
-          this.router.navigate(['/']);
-        },
-        (response: OptResponse) => {
-          this.setServerMessage(response.statusCode);
-        }
-      )
-    );
+    user.setFullName(self.form.value.firstName, self.form.value.lastName);
+    user.username = self.form.value.email;
+    user.password = self.form.value.password;
+    user.email = self.form.value.email;
+    self.userService.update(user)
+      .then(function() {
+        self.router.navigate(['/']);
+      })
+      .catch(function(response: OptResponse) {
+        self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = false;
+      });
   }
-
 }

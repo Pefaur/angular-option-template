@@ -1,20 +1,16 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { OptFormComponent, OptAuthService, OptResponse, OptPasswordValidation } from '@option/core';
-import { ISubscription } from 'rxjs/Subscription';
 
 // @Component({
 //   selector: 'opt-form-recover-password',
 //   templateUrl: './form-recover-password.component.html',
 //   styleUrls: ['./form-recover-password.component.scss']
 // })
-export class OptFormRecoverPasswordComponent extends OptFormComponent implements OnInit, OnDestroy {
-
+export class OptFormRecoverPasswordComponent extends OptFormComponent implements OnInit {
   @Output() onSubmitted = new EventEmitter();
   @Output() onSubmitError = new EventEmitter();
-
-  requestSubscribes: ISubscription[];
 
   token: string;
 
@@ -49,7 +45,7 @@ export class OptFormRecoverPasswordComponent extends OptFormComponent implements
 
   constructor(protected formBuilder: FormBuilder,
               protected authService: OptAuthService,
-              protected router: Router,
+              private router: Router,
               protected activatedRoute: ActivatedRoute) {
     super(formBuilder);
     this.formBuilderGroupControlsConfig = {
@@ -66,21 +62,12 @@ export class OptFormRecoverPasswordComponent extends OptFormComponent implements
   }
 
   ngOnInit(): void {
+    const self = this;
     // subscribe to router event
     this.activatedRoute.params.subscribe((params: Params) => {
-      this.token = params['token'];
+      self.token = params['token'];
     });
-
     super.buildForm();
-
-    this.requestSubscribes = [];
-  }
-
-  ngOnDestroy(): void {
-    // unsubscribe requests
-    this.requestSubscribes.map(requestSubscribe => {
-      requestSubscribe.unsubscribe();
-    });
   }
 
   goToLogin() {
@@ -88,20 +75,21 @@ export class OptFormRecoverPasswordComponent extends OptFormComponent implements
   }
 
   submit() {
+    const self = this;
     const password = this.form.value.password;
     const passwordConfirmation = this.form.value.password;
-    this.requestSubscribes.push(this.authService.resetPassword(this.token, password, passwordConfirmation)
-      .subscribe(
-        (response: OptResponse) => {
-          this.onSubmitted.emit();
-          this.setServerMessage(response.statusCode, true);
-        },
-        (response: OptResponse) => {
-          this.onSubmitError.emit();
-          this.setServerMessage(response.statusCode);
-        }
-      )
-    );
+    this.authService.resetPassword(this.token, password, passwordConfirmation)
+      .then(function(response: OptResponse) {
+        self.onSubmitted.emit();
+        self.serverMessage.message = (<any>self).SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = true;
+      })
+      .catch(function(response: OptResponse) {
+        self.onSubmitError.emit();
+        self.serverMessage.message = (<any>self).SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = false;
+      });
   }
-  
 }

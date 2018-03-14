@@ -64,35 +64,33 @@ var OptFormRecoverPasswordComponent = /** @class */ (function (_super) {
         return _this;
     }
     OptFormRecoverPasswordComponent.prototype.ngOnInit = function () {
-        var _this = this;
+        var self = this;
         // subscribe to router event
         this.activatedRoute.params.subscribe(function (params) {
-            _this.token = params['token'];
+            self.token = params['token'];
         });
         _super.prototype.buildForm.call(this);
-        this.requestSubscribes = [];
-    };
-    OptFormRecoverPasswordComponent.prototype.ngOnDestroy = function () {
-        // unsubscribe requests
-        this.requestSubscribes.map(function (requestSubscribe) {
-            requestSubscribe.unsubscribe();
-        });
     };
     OptFormRecoverPasswordComponent.prototype.goToLogin = function () {
         this.router.navigate(['/login']);
     };
     OptFormRecoverPasswordComponent.prototype.submit = function () {
-        var _this = this;
+        var self = this;
         var password = this.form.value.password;
         var passwordConfirmation = this.form.value.password;
-        this.requestSubscribes.push(this.authService.resetPassword(this.token, password, passwordConfirmation)
-            .subscribe(function (response) {
-            _this.onSubmitted.emit();
-            _this.setServerMessage(response.statusCode, true);
-        }, function (response) {
-            _this.onSubmitError.emit();
-            _this.setServerMessage(response.statusCode);
-        }));
+        this.authService.resetPassword(this.token, password, passwordConfirmation)
+            .then(function (response) {
+            self.onSubmitted.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = true;
+        })
+            .catch(function (response) {
+            self.onSubmitError.emit();
+            self.serverMessage.message = self.SERVER_MESSAGES[response.statusCode];
+            self.serverMessage.show = true;
+            self.serverMessage.isStatusOk = false;
+        });
     };
     OptFormRecoverPasswordComponent.propDecorators = {
         'onSubmitted': [{ type: Output },],

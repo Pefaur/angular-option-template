@@ -1,18 +1,15 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { OptFormComponent, OptAuthService, OptResponse } from '@option/core';
-import { ISubscription } from 'rxjs/Subscription';
 
 // @Component({
 //   selector: 'opt-form-forgot-password',
 //   templateUrl: './form-forgot-password.component.html',
 //   styleUrls: ['./form-forgot-password.component.scss']
 // })
-export class OptFormForgotPasswordComponent extends OptFormComponent implements OnInit, OnDestroy {
+export class OptFormForgotPasswordComponent extends OptFormComponent implements OnInit {
   @Output() onSubmitted = new EventEmitter();
   @Output() onSubmitError = new EventEmitter();
-
-  requestSubscribes: ISubscription[];
 
   formErrors = {
     'email': ''
@@ -46,30 +43,20 @@ export class OptFormForgotPasswordComponent extends OptFormComponent implements 
     };
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.requestSubscribes = [];
-  }
-
-  ngOnDestroy(): void {
-    // unsubscribe requests
-    this.requestSubscribes.map(requestSubscribe => {
-      requestSubscribe.unsubscribe();
-    });
-  }
-
   submit() {
-    this.requestSubscribes.push(this.authService.recoverPassword(this.form.value.email)
-      .subscribe(
-        (response: OptResponse) => {
-          this.onSubmitted.emit();
-          this.setServerMessage(response.statusCode, true);
-        },
-        (response: OptResponse) => {
-          this.onSubmitError.emit();
-          this.setServerMessage(response.statusCode);
-        }
-      )
-    );
+    const self = this;
+    self.authService.recoverPassword(self.form.value.email)
+      .then(function(response: OptResponse) {
+        self.onSubmitted.emit();
+        self.serverMessage.message = (<any>self).SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = true;
+      })
+      .catch(function(response: OptResponse) {
+        self.onSubmitError.emit();
+        self.serverMessage.message = (<any>self).SERVER_MESSAGES[response.statusCode];
+        self.serverMessage.show = true;
+        self.serverMessage.isStatusOk = false;
+      });
   }
 }
